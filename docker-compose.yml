@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  ollama:
+    environment:
+      OLLAMA_ORIGINS: "app://obsidian.md*"
+    image: docker.io/ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    networks:
+      - ollama-network
+    volumes:
+      - database:/root/.ollama/models
+    mem_limit: 28g
+    cpus: 8
+
+  open-web:
+    environment:
+      OLLAMA_BASE_URL: "http://ollama:11434"
+    image: ghcr.io/open-webui/open-webui:main
+    ports:
+      - "3000:8080"
+    networks:
+      - ollama-network
+    mem_limit: 4g
+    cpus: 2
+
+networks:
+  ollama-network:
+
+volumes:
+  database:
